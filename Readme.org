@@ -1,0 +1,7 @@
+#+TITLE: Readme
+
+* About
+
+This is my attempt to solve the Advent of Code 2020 challenge.
+
+The language of choice is Clojure.
