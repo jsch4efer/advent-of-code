@@ -7,6 +7,7 @@
 
 ;; Part 1
 
+
 (defn valid-passwords-policy1 [data]
   (let [entries (s/split-lines data)
         valid-entries (->> entries
@@ -30,12 +31,11 @@
 
   (valid-passwords-policy1 (slurp (io/resource "day-2")))
   ;; => 410
-
-
-  )
+)
 
 
 ;; Part 2
+
 
 (defn get-pos-map [s]
   (->> s
@@ -72,5 +72,4 @@
 
   (valid-passwords-policy2 (slurp (io/resource "day-2")))
   ;; => 694
-
-  )
+)

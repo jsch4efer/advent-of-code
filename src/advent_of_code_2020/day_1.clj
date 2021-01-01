@@ -31,7 +31,7 @@
                      (s/split-lines)
                      (map (partial read-string))))
   ;; => 1019571
-  )
+)
 
 
 ;; Part 2
@@ -48,7 +48,6 @@
 (defn solve-part-2 [data]
   (apply * (find-triple data)))
 
-
 (comment
   (solve-part-2 [1721
                  979
@@ -62,5 +61,4 @@
                      (s/split-lines)
                      (map (partial read-string))))
   ;; => 100655544
-
-  )
+)
