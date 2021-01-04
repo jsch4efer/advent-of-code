@@ -59,6 +59,7 @@ b")
 
   ;; Part 2
 
+
   (->> example-data
        parse-answers
        count-yes-for-everyone)
@@ -66,6 +67,6 @@ b")
 
   (->> (slurp (io/resource "day-6"))
        parse-answers
-       count-yes-for-everyone)
 
-  )
+
+       count-yes-for-everyone))

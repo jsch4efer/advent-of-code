@@ -4,8 +4,6 @@
             [clojure.spec.alpha :as s]
             [clojure.set :as cs]))
 
-
-
 (defn parse-passports [data]
   (->> data
        string/split-lines
@@ -16,22 +14,18 @@
                                 (map (fn [e]
                                        (let [[k v] (string/split e #":")]
                                          [(keyword k) v])))
-                                (into {}))))
-       ))
+                                (into {}))))))
 
 (defn validate-passports-part-1 [passports]
   (let [results (->> passports
-                    (reduce (fn [report passport]
-                              (let [valid? (cs/subset?  #{:eyr :iyr :byr :pid :hcl :hgt :ecl} (into #{} (keys passport)))
-                                    ]
-                                (update report (if valid? :valid :invalid) #(conj % passport))))
-                            {:valid []
-                             :invalid []}))]
+                     (reduce (fn [report passport]
+                               (let [valid? (cs/subset?  #{:eyr :iyr :byr :pid :hcl :hgt :ecl} (into #{} (keys passport)))]
+                                 (update report (if valid? :valid :invalid) #(conj % passport))))
+                             {:valid []
+                              :invalid []}))]
     {:summary {:valid (->> results :valid count)
                :invalid (->> results :invalid count)}
-     :passports results
-     }
-    ))
+     :passports results}))
 
 (def example-data "ecl:gry pid:860033327 eyr:2020 hcl:#fffffd
 byr:1937 iyr:2017 cid:147 hgt:183cm
@@ -50,25 +44,24 @@ iyr:2011 ecl:brn hgt:59in")
 
 ;; Part 1
 
+
 (comment
   (->> (parse-passports example-data)
        validate-passports-part-1
-       :summary
-       )
+       :summary)
   ;; => {:valid 2, :invalid 2}
 
 
   (->> (slurp (io/resource "day-4"))
        parse-passports
        validate-passports-part-1
-       :summary
-       )
+       :summary)
   ;; => {:valid 219, :invalid 68}
-
-  )
+)
 
 
 ;; Part 2
+
 
 (s/def ::byr (s/and #(re-find #"^\w{4}$" %) #(<= 1920 (read-string %) 2002)))
 (s/def ::iyr (s/and #(re-find #"^\w{4}$" %) #(<= 2010 (read-string %) 2020)))
@@ -76,8 +69,7 @@ iyr:2011 ecl:brn hgt:59in")
 (s/def ::hgt (s/and #(re-find #"^\d+(cm|in)$" %) #(let [[_ height unit] (re-find #"^(\d+)(cm|in)$" %)]
                                                     (case unit
                                                       "cm" (<= 150 (read-string height) 193)
-                                                      "in" (<= 59 (read-string height) 76))
-                                                    )))
+                                                      "in" (<= 59 (read-string height) 76)))))
 (s/def ::hcl #(re-find #"^#[a-f0-9]{6}$" %))
 (s/def ::ecl #{"amb" "blu" "brn" "gry" "grn" "hzl" "oth"})
 (s/def ::pid #(re-find #"^\d{9}$" %))
@@ -96,11 +88,7 @@ iyr:2011 ecl:brn hgt:59in")
                               :invalid []}))]
     {:summary {:valid (->> results :valid count)
                :invalid (->> results :invalid count)}
-     :passports results
-     }
-    ))
-
-
+     :passports results}))
 
 (comment
 
@@ -118,7 +106,6 @@ hgt:59cm ecl:zzz
 eyr:2038 hcl:74454a iyr:2023
 pid:3556412378 byr:2007")
 
-
   (def valid-examples "pid:087499704 hgt:74in ecl:grn iyr:2012 eyr:2030 byr:1980
 hcl:#623a2f
 
@@ -130,7 +117,7 @@ hgt:164cm byr:2001 iyr:2015 cid:88
 pid:545766238 ecl:hzl
 eyr:2022
 
-iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719" )
+iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719")
 
   (->> invalid-examples
        parse-passports
@@ -150,5 +137,4 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719" )
        validate-passports-part-2
        :summary)
   ;; => {:valid 127, :invalid 160}
-
-  )
+)

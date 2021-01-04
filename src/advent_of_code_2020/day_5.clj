@@ -6,14 +6,12 @@
 ;; Part 1
 
 
-
 (defn as-binary [s interp]
   (->> (seq s)
        (reduce (fn [res b]
                  (let [next (bit-shift-left res 1)
                        bit (interp b)]
-                   (bit-or next bit))
-                 )
+                   (bit-or next bit)))
                0)))
 
 (defn parse-seat [seat]
@@ -28,19 +26,20 @@
 
 ;; Part 1
 
+
 (parse-seat "FBFBBFFRLR")
 ;; => {:row 44, :column 5, :id 357}
 
 (->> '("BFFFBBFRRR"  "FFFBBBFRRR" "BBFFBBFRLL")
      (map (comp :id parse-seat))
      (into [])
-    (apply max) )
+     (apply max))
 ;; => 820
 
 (defn parse-seats [input]
   (->> input
-     (string/split-lines)
-     (map parse-seat)))
+       (string/split-lines)
+       (map parse-seat)))
 
 (->> (slurp (io/resource "day-5"))
      parse-seats
@@ -61,7 +60,6 @@
                    (= (nth sorted-seat-ids snd) (+ (nth sorted-seat-ids fst) 2))))
          (map (fn [[_ snd]] (dec (nth sorted-seat-ids snd))))
          first)))
-
 
 (find-seat (parse-seats (slurp (io/resource "day-5"))))
 ;; => 671
