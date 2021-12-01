@@ -41,7 +41,7 @@
        (string/split-lines)
        (map parse-seat)))
 
-(->> (slurp (io/resource "day-5"))
+(->> (slurp (io/resource "2020/day-5"))
      parse-seats
      (map :id)
      (apply max))
@@ -61,5 +61,5 @@
          (map (fn [[_ snd]] (dec (nth sorted-seat-ids snd))))
          first)))
 
-(find-seat (parse-seats (slurp (io/resource "day-5"))))
+(find-seat (parse-seats (slurp (io/resource "2020/day-5"))))
 ;; => 671

@@ -29,7 +29,7 @@
   ;; => 2
 
 
-  (valid-passwords-policy1 (slurp (io/resource "day-2")))
+  (valid-passwords-policy1 (slurp (io/resource "2020/day-2")))
   ;; => 410
 )
 
@@ -70,6 +70,6 @@
 2-9 c: ccccccccc")
   ;; => 1
 
-  (valid-passwords-policy2 (slurp (io/resource "day-2")))
+  (valid-passwords-policy2 (slurp (io/resource "2020/day-2")))
   ;; => 694
 )

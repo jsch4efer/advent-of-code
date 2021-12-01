@@ -27,7 +27,7 @@
                  1456])
   ;; => 514579
 
-  (solve-part-1 (->> (slurp (io/resource "day-1"))
+  (solve-part-1 (->> (slurp (io/resource "2020/day-1"))
                      (s/split-lines)
                      (map (partial read-string))))
   ;; => 1019571
@@ -57,7 +57,7 @@
                  1456])
   ;; => 241861950
 
-  (solve-part-2 (->> (slurp (io/resource "day-1"))
+  (solve-part-2 (->> (slurp (io/resource "2020/day-1"))
                      (s/split-lines)
                      (map (partial read-string))))
   ;; => 100655544

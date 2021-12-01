@@ -49,7 +49,7 @@ dotted black bags contain no other bags.
   (find-all-outermost-bags-for (parse-bag-rules example-input) "shiny gold")
   ;; => #{"muted yellow" "light red" "dark orange" "bright white"}
 
-  (-> (find-all-outermost-bags-for (parse-bag-rules (slurp (io/resource "day-7"))) "shiny gold")
+  (-> (find-all-outermost-bags-for (parse-bag-rules (slurp (io/resource "2020/day-7"))) "shiny gold")
       count)
   ;; => 224
 )
@@ -111,6 +111,6 @@ dotted black bags contain no other bags.
   (calculate-size (parse-bag-rules example-input) "shiny gold")
   ;; => 32
 
-  (calculate-size (parse-bag-rules (slurp (io/resource "day-7"))) "shiny gold")
+  (calculate-size (parse-bag-rules (slurp (io/resource "2020/day-7"))) "shiny gold")
   ;; => 1488
 )

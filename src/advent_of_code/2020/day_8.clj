@@ -46,7 +46,7 @@ acc +6")
   ;; => 5
 
 
-  (-> (slurp (io/resource "day-8"))
+  (-> (slurp (io/resource "2020/day-8"))
       parse-input
       detect-infinite-loop
       :acc)
@@ -94,6 +94,6 @@ acc +6")
   (fix-looping-program (parse-input example-input))
   ;; => 8
 
-  (fix-looping-program (parse-input (slurp (io/resource "day-8"))))
+  (fix-looping-program (parse-input (slurp (io/resource "2020/day-8"))))
   ;; => 1688
   )

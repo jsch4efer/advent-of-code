@@ -52,7 +52,7 @@ iyr:2011 ecl:brn hgt:59in")
   ;; => {:valid 2, :invalid 2}
 
 
-  (->> (slurp (io/resource "day-4"))
+  (->> (slurp (io/resource "2020/day-4"))
        parse-passports
        validate-passports-part-1
        :summary)
@@ -132,7 +132,7 @@ iyr:2010 hgt:158cm hcl:#b6652a ecl:blu byr:1944 eyr:2021 pid:093154719")
   ;; => {:valid 4, :invalid 0}
 
 
-  (->> (slurp (io/resource "day-4"))
+  (->> (slurp (io/resource "2020/day-4"))
        parse-passports
        validate-passports-part-2
        :summary)

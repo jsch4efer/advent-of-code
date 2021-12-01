@@ -41,7 +41,7 @@
   (collect-trees {:right 3 :down 1} example)
   ;; => 7
 
-  (def data (slurp (io/resource "day-3")))
+  (def data (slurp (io/resource "2020/day-3")))
 
   (collect-trees {:right 3 :down 1} data)
   ;; => 209

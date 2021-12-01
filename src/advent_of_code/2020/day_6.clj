@@ -49,7 +49,7 @@ b")
   ;; => 11
 
 
-  (->> (slurp (io/resource "day-6"))
+  (->> (slurp (io/resource "2020/day-6"))
        parse-answers
        count-yes-for-anyone)
   ;; => 6878
@@ -65,7 +65,7 @@ b")
        count-yes-for-everyone)
   ;; => 6
 
-  (->> (slurp (io/resource "day-6"))
+  (->> (slurp (io/resource "2020/day-6"))
        parse-answers
 
 
