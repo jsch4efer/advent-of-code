@@ -1,4 +1,4 @@
-(ns advent-of-code-2020.day-9
+(ns advent-of-code.2020.day-9
   (:require [clojure.java.io :as io]
             [clojure.string :as string]
             [clojure.test :refer :all]))

@@ -1,4 +1,4 @@
-(ns advent-of-code-2020.input
+(ns advent-of-code.input
   (:require [clj-http.client :as client]))
 
 (defn get-input [day]
