@@ -22,7 +22,7 @@ L.LLLLL.LL")
 (defn- occupied-seats-near-by [waiting-room [pos-x pos-y]]
   (let [correction-term (case (get-in waiting-room [pos-y pos-x])
                           1 1
-                          :else 0)]
+                          0)]
     (->> (for [x (range (dec pos-x) (+ pos-x 2))
                y (range (dec pos-y) (+ pos-y 2))]
            (get-in waiting-room [y x]))
@@ -53,38 +53,40 @@ L.LLLLL.LL")
   )
 
 (defn- print-and-pass [round x]
-  (do
-    (println "Round" round (count-occupied-seats x))
-    x))
+  (println "Round" round (count-occupied-seats x))
+    x)
 
 
-(let [parsed (->> example
-                  string/split-lines
-                  (map (fn [line]
-                         (->> line
-                              (map #(case % \L 0 \. nil \# 1) )
-                              (into []))))
-                  (into []))]
-  (->> parsed
-       (print-and-pass 0)
-       simulate-waiting-room-step
-        ;; (print-and-pass 1)
-       ;; simulate-waiting-room-step
-       ;; (print-and-pass 2)
-       ;; simulate-waiting-room-step
-       ;; (print-and-pass 3)
-       ;; simulate-waiting-room-step
-       ;; (print-and-pass 4)
-       ;; simulate-waiting-room-step
-       ;; (print-and-pass 5)
-       ;; simulate-waiting-room-step
-       ;; (print-and-pass 6)
-       ;; simulate-waiting-room-step
-       ;; (print-and-pass 7)
-       ;; simulate-waiting-room-step
-       ;; (print-and-pass 8)
+(comment
+  (let [parsed (->> example
+                    string/split-lines
+                    (map (fn [line]
+                           (->> line
+                                (map #(case % \L 0 \. nil \# 1) )
+                                (into []))))
+                    (into []))]
+    (->> parsed
+         simulate-waiting-room-step
+         ;; (print-and-pass 1)
+         ;; simulate-waiting-room-step
+         ;; (print-and-pass 2)
+         ;; simulate-waiting-room-step
+         ;; (print-and-pass 3)
+         ;; simulate-waiting-room-step
+         ;; (print-and-pass 4)
+         ;; simulate-waiting-room-step
+         ;; (print-and-pass 5)
+         ;; simulate-waiting-room-step
+         ;; (print-and-pass 6)
+         ;; simulate-waiting-room-step
+         ;; (print-and-pass 7)
+         ;; simulate-waiting-room-step
+         ;; (print-and-pass 8)
 
-       ))
+         ))
+
+
+  )
 
 #_(loop [current-waiting-room parsed
             steps 0]
@@ -93,4 +95,3 @@ L.LLLLL.LL")
            steps
            (recur next-waiting-room (inc steps)))
          ))
-(println 3)
