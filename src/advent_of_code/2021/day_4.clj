@@ -79,48 +79,73 @@
 
   )
 
-(defn score-board [board choices]
+(defn score-board [board last-choice]
   (->> (apply concat board)
        (filter (partial not= "x"))
        (map read-string)
        (reduce +)
-       (*  (read-string (last choices)))
+       (*  (read-string last-choice))
        )
   )
 
 (defn run-bingo [bingo]
   (loop [boards (:boards bingo)
+         finished []
          considered []
          remained (:choices bingo)]
-    (println "Considered:" considered "Remained:" remained "Boards:" boards)
-    (if-let [winner (first (filter is-board-finished? boards))]
-      (score-board winner considered)
-      (if (empty? remained)
-        "No winner"
-        (let [choice (first remained)
-              new-boards (for [board boards]
-                           (for [row board]
-                             (replace {choice "x"} row)))
-              ]
-          (recur new-boards (conj considered choice) (rest remained))
-          )))
-    ))
+    (if (empty? remained)
+      finished
+      (let [choice (first remained)
+            new-boards (for [board boards]
+                         (for [row board]
+                           (replace {choice "x"} row)))
+            {:keys [new-finished remaining]} (group-by (fn [board]
+                                                   (if (is-board-finished? board) :new-finished :remaining)) new-boards)
+            ]
+        (recur remaining (conj finished [choice new-finished]) (conj considered choice) (rest remained)
+        ))) ))
+
+(defn first-winner [history]
+  (->> history (filter #(not-empty (second %))) (first))
+  )
+
+
+(defn last-winner [history]
+  (->> (reverse history) (filter #(not-empty (second %))) (first))
+  )
+
 
 (comment
 
+  (group-by even? [1 2 3 4 5])
 
  ;; Part 1
 
-  (run-bingo (parse-bingo example-bingo))
+  (let [history (run-bingo (parse-bingo example-bingo))
+        [last-choice boards] (first-winner history)]
+    (score-board (first boards) last-choice )
+    )
 ;; => 4512
 
-  (run-bingo (parse-bingo (-> (io/resource "2021/day-4") slurp)))
+  (let [history (run-bingo (parse-bingo (-> (io/resource "2021/day-4") slurp)))
+        [last-choice boards] (first-winner history)]
+    (score-board (first boards) last-choice)
+    )
 ;; => 55770
 
 
   ;; Part 2
 
+  (let [history (run-bingo (parse-bingo example-bingo))
+        [last-choice boards] (last-winner history)]
+    (score-board (first boards) last-choice )
+    )
+;; => 1924
 
-
+  (let [history (run-bingo (parse-bingo (-> (io/resource "2021/day-4") slurp)))
+        [last-choice boards] (last-winner history)]
+    (score-board (first boards) last-choice)
+    )
+;; => 2980
 
   )
