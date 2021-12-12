@@ -34,13 +34,7 @@
                  (update-in os o inc))
                octopus)))
 
-(defn print-octopus [octopus]
-  (println "--------")
-  (->> octopus (map identity) (run! println))
-  (println "--------")
-  octopus)
-
-(defn step [[octopus flash-count]]
+(defn step [[nr octopus flash-count]]
   (let [y-dim (-> octopus count)
         x-dim (-> octopus first count)]
     (loop [octopus (increase-energy octopus x-dim y-dim)
@@ -48,15 +42,24 @@
            iter 0]
       (let [[flashed-octopus new-flashed?] (flashed-neighbors octopus flashed? x-dim y-dim)]
         (if (= flashed? new-flashed?)
-          [(reduce #(assoc-in %1 %2 0) flashed-octopus new-flashed?) (+ flash-count (count new-flashed?))]
+          [(inc nr) (reduce #(assoc-in %1 %2 0) flashed-octopus new-flashed?) (+ flash-count (count new-flashed?))]
           (recur flashed-octopus new-flashed? (inc iter)))))))
 
 (defn count-flashed-octopus [octopus steps]
-  (->> (iterate step [octopus 0])
+  (->> (iterate step [0 octopus 0])
        (take (inc steps))
        (last)
-       (second)
-       ))
+       (last)))
+
+(defn find-synchronized-flash-step [octopus]
+  (let [all (* (count octopus) (count (first octopus)))]
+    (->> (iterate step [0 octopus 0])
+         (partition 2 1)
+         (map (fn [[[_ _ flashed-last] [n _ flashed-now]]]
+                [n (- flashed-now flashed-last)]))
+         (filter #(= all (second %)))
+         (map first)
+         (first))))
 
 (comment
 
@@ -89,5 +92,15 @@
   (count-flashed-octopus (parse-octopus example-input) 100)
   ;; => 1656
 
-  (count-flashed-octopus (parse-octopus input) 100))
+  (count-flashed-octopus (parse-octopus input) 100)
 ;; => 1749
+
+
+  ;; Part 2
+
+  (find-synchronized-flash-step (parse-octopus example-input))
+;; => 195
+
+  (find-synchronized-flash-step (parse-octopus input))
+;; => 285
+  )
