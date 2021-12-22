@@ -29,8 +29,10 @@
                  (and (<= 0 ny (dec dim-y)) (<= 0 nx (dec dim-x)))))
        (into [])))
 
-(defn find-low-risk-path [{:keys [dim-x dim-y]} cave->risk start]
-  (let [end [(dec dim-y) (dec dim-x)]]
+(defn find-low-risk-path [cave start]
+  (let [dim-y (count cave)
+        dim-x (count (first cave))
+        end [(dec dim-y) (dec dim-x)]]
     (loop [path->risk {start 0}
            cave->predes {}
            caves-to-visit (apply sorted-map-by (comparator <) (->> (for [y (range 0 dim-y)
@@ -44,72 +46,77 @@
            visited #{}
                                                  ]
       (if-let [[risk candidates] (first caves-to-visit)]
-        (do (println "First candidate with risk " risk )
-           (let [candidate (first candidates)
-                 new-caves-to-visit (if (= 1 (count candidates))
-                                      (dissoc caves-to-visit risk)
-                                      (assoc caves-to-visit risk (rest candidates)))
-                 [next-risks next-predes next-visit] (reduce
-                                           (fn [[risks predes visit] neighbor]
-                                             (if (not (contains? visited neighbor))
-                                               (let [alternative (+ risk (cave->risk neighbor))
-                                                     existing (get path->risk neighbor Long/MAX_VALUE)]
-                                                 (if (< alternative existing)
-                                                   [(assoc risks neighbor alternative)
-                                                    (assoc predes neighbor candidate)
-                                                    (let [new-relatives (disj (get visit existing) neighbor)]
-                                                      (if (empty? new-relatives)
-                                                        (dissoc visit existing)
-                                                        (-> visit
-                                                            (update existing #(disj % neighbor))
-                                                            (update alternative (partial set/union #{neighbor})))
-                                                        ))
-                                                    ]
-                                                   [risks predes visit]))
-                                               [risks predes visit]))
+        (let [candidate (first candidates)
+              new-caves-to-visit (if (= 1 (count candidates))
+                                   (dissoc caves-to-visit risk)
+                                   (assoc caves-to-visit risk (rest candidates)))
+              [next-risks next-predes next-visit] (reduce
+                                                   (fn [[risks predes visit] neighbor]
+                                                     (if (not (contains? visited neighbor))
+                                                       (let [alternative (+ risk (get-in cave neighbor))
+                                                             existing (get path->risk neighbor Long/MAX_VALUE)]
+                                                         (if (< alternative existing)
+                                                           [(assoc risks neighbor alternative)
+                                                            (assoc predes neighbor candidate)
+                                                            (let [new-relatives (disj (get visit existing) neighbor)]
+                                                              (if (empty? new-relatives)
+                                                                (dissoc visit existing)
+                                                                (-> visit
+                                                                    (update existing #(disj % neighbor))
+                                                                    (update alternative (partial set/union #{neighbor})))
+                                                                ))
+                                                            ]
+                                                           [risks predes visit]))
+                                                       [risks predes visit]))
 
-                                           [path->risk cave->predes new-caves-to-visit]
-                                           (neighbors candidate dim-x dim-y))]
+                                                   [path->risk cave->predes new-caves-to-visit]
+                                                   (neighbors candidate dim-x dim-y))]
 
-             (println "Candidate checked:" candidate)
-             (recur next-risks next-predes next-visit (conj visited candidate))))
+          (recur next-risks next-predes next-visit (conj visited candidate)))
         (get path->risk end Long/MAX_VALUE)
         ))))
 
 (defn cave-risk-2 [cave-map]
+  (let [x-dim (count (first cave-map))
+        y-dim (count cave-map)]
     (fn [[y x]]
-      (let [base-risk (get-in cave-map [(mod y 10) (mod x 10)])
-            risk (+ base-risk (int (/ x 10)) (int (/ y 10)))]
-        (if (< 9 risk)
-          (mod (inc risk) 10)
-          risk))
-      ))
+      (let [base-risk (get-in cave-map [(mod y y-dim) (mod x x-dim)])
+            tile-dist (+ (int (/ x x-dim)) (int (/ y y-dim)))
+            risk (+ base-risk tile-dist)]
+        (inc (mod (dec risk) 9))
+        ))) )
+
+(let [r (cave-risk-2 [[8]])]
+  (for [y (range 10)]
+    (for [x (range 10)]
+        (r [(* 10 y) (* 10 x)])
+        )
+    ))
+
+(defn generate-large-cave [cave]
+  (let [risks (cave-risk-2 cave)]
+    (into []
+          (for [y (range (* 5 (count cave)))]
+            (into [] (for [x (range (* 5 (count (first cave))))]
+                       (risks [y x])))
+            )))
+  )
 
 (comment
 
   ;; Part 1
 
-  (find-low-risk-path {:dim-x 10 :dim-y 10} (partial get-in (parse-cave example)) [0 0])
+  (find-low-risk-path (parse-cave example) [0 0])
   ;; => 40
 
-  (let [cave (parse-cave (slurp (io/resource "2021/day-15")))
-        dim {:dim-x (count (first cave)) :dim-y (count cave)}]
-    (find-low-risk-path dim (partial get-in cave) [0 0]))
+  (find-low-risk-path (parse-cave (slurp (io/resource "2021/day-15"))) [0 0])
   ;; => 602
 
   ;; Part 2
 
-
-
-  (find-low-risk-path {:dim-x 50 :dim-y 50} (cave-risk-2 (parse-cave example)) [0 0])
+  (find-low-risk-path (generate-large-cave (parse-cave example)) [0 0])
 ;; => 315
 
-  (let [cave (parse-cave (slurp (io/resource "2021/day-15")))
-        dim {:dim-x (* 5 (count (first cave))) :dim-y (* 5 (count cave))}]
-    (find-low-risk-path dim (cave-risk-2 cave) [0 0]))
-
+  (find-low-risk-path (generate-large-cave (parse-cave (slurp (io/resource "2021/day-15")))) [0 0])
+;; => 2935
   )
-
-
-(let [s (apply sorted-map  (mapcat identity (into [] {10 :b 2 :c 5 :d})))]
-  (first (assoc (dissoc s 2) 3 :e)))
